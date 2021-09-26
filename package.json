@@ -1,7 +1,7 @@
 {
  "name": "onelink",
  "version": "0.1.0",
- "homepage": "https://A5H1Q.github.io/MBC-Teams-React/",
+ "homepage": "https://mbcbot.github.io/",
  "dependencies": {
   "@natscale/react-calendar": "^0.0.0-beta.8",
   "gh-pages": "^3.2.3",

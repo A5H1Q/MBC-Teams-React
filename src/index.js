@@ -13,7 +13,7 @@ import Redirect from "./Components/Redirect.js";
 import Timeline from "./Components/Timeline.js";
 import {Calendar} from "@natscale/react-calendar";
 
-const Ver = 2.0; // API Data Version
+const Ver = 2.1; // API Data Version
 const Bug = 0; // Invoke Maintenance Mode
 
 const App = () => {

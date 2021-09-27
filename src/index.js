@@ -72,6 +72,7 @@ const App = () => {
     showLogin(false);
     showUpdate(false);
     showHomeUI(true); // Welcome Home Señor
+    setredirectOption(localStorage.getItem("redirectOption"));
    }
   }
  };
@@ -130,7 +131,7 @@ const App = () => {
 
  useEffect(() => {
   initChecks(); // Routine Initial Checks (onstartup)
-  setredirectOption(localStorage.getItem("redirectOption"));
+
   // eslint-disable-next-line
  }, []);
 // Checking Redirect option 

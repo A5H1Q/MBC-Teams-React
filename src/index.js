@@ -26,6 +26,7 @@ const App = () => {
  const [minispin, showMiniSpinner] = useState(false);
  const [attendence, setAttendence] = useState(0);
  const [index, setIndex] = useState(0);
+ const [redirectOption,setredirectOption] = useState();
 
  // Calender Configs see: @natscale/react-calender
  const [calOptions] = useState({
@@ -129,15 +130,37 @@ const App = () => {
 
  useEffect(() => {
   initChecks(); // Routine Initial Checks (onstartup)
+  setredirectOption(localStorage.getItem("redirectOption"));
   // eslint-disable-next-line
  }, []);
+// Checking Redirect option 
+ function changeRedirectOption(){
+    if(localStorage.getItem("redirectOption")=="true")
+    {
+    
+        localStorage.setItem("redirectOption","false");
+        setredirectOption(false);
+    }
+    else
+    {
+        localStorage.setItem("redirectOption","true");
+        setredirectOption(true);
+    }
+ }
 
  return (
   <div className="App">
    <header>
     <h3>One Link</h3>
     <div>
-     {homepage && <GraphIco title="Check Attendence" onClick={mbcPortal} />}
+    {homepage &&    
+     <span> 
+         <label className="switch" title="Enable/Disable Auto Redirect">
+            <input type="checkbox" onClick={changeRedirectOption} defaultChecked={redirectOption=='true'?true:false} id="togBtn" />
+            <div className="slider round"></div>
+        </label>
+        <GraphIco title="Check Attendence" onClick={mbcPortal} />
+    </span>}
      {mode ? (
       <LightIco
        title="Apply Lightmode"

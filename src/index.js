@@ -12,204 +12,262 @@ import Classwork from "./Components/Classwork.js";
 import Redirect from "./Components/Redirect.js";
 import Timeline from "./Components/Timeline.js";
 import {Calendar} from "@natscale/react-calendar";
-
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const DOMPurify = require('dompurify')(window);
+const MySwal = withReactContent(Swal)
 const Ver = 3.1; // API Data Version
 const Bug = 0; // Invoke Maintenance Mode
 
 const App = () => {
- const [mode, applyDark] = useState(false);
- const [testing, showMaintenanceBox] = useState(false);
- const [login, showLogin] = useState(false);
- const [update, showUpdate] = useState(false);
- const [homepage, showHomeUI] = useState(false);
- const [calval, setCalVal] = useState(new Date());
- const [minispin, showMiniSpinner] = useState(false);
- const [attendence, setAttendence] = useState(0);
- const [index, setIndex] = useState(0);
- const [redirectOption, setredirectOption] = useState();
+    const [mode, applyDark] = useState(false);
+    const [testing, showMaintenanceBox] = useState(false);
+    const [login, showLogin] = useState(false);
+    const [update, showUpdate] = useState(false);
+    const [homepage, showHomeUI] = useState(false);
+    const [calval, setCalVal] = useState(new Date());
+    const [minispin, showMiniSpinner] = useState(false);
+    const [attendence, setAttendence] = useState(0);
+    const [index, setIndex] = useState(0);
+    const [redirectOption, setredirectOption] = useState();
+    const [noteTracker, setnoteTracker] = useState(null);
 
- // Calender Configs see: @natscale/react-calender
- const [calOptions] = useState({
-  useDarkMode: false,
-  startOfWeek: 0,
-  disablePast: true,
- });
+    // Calender Configs see: @natscale/react-calender
+    const [calOptions] = useState({
+        useDarkMode: false,
+        startOfWeek: 0,
+        disablePast: true,
+    });
 
- // Startup Checks
- const initChecks = () => {
-  var theme;
-  // 1. Theme Check
-  if (localStorage.getItem("myTheme") === null) {
-   localStorage.setItem("myTheme", "light");
-   theme = "light";
-  } else {
-   theme = localStorage.getItem("myTheme");
-   theme === "dark" ? applyDarkTheme(true) : applyDarkTheme(false);
-  }
+    // Startup Checks
+    const initChecks = () => {
+        var theme;
+        // 1. Theme Check
+        if (localStorage.getItem("myTheme") === null) {
+            localStorage.setItem("myTheme", "light");
+            theme = "light";
+        } else {
+            theme = localStorage.getItem("myTheme");
+            theme === "dark" ? applyDarkTheme(true) : applyDarkTheme(false);
+        }
 
-  if (Bug >= 1) {
-   // 2. Maintenance Mode Check
-   showMaintenanceBox(true);
-  } else if (localStorage.getItem("myAuth") === null) {
-   // 3. Authorization Check
+        if (Bug >= 1) {
+            // 2. Maintenance Mode Check
+            showMaintenanceBox(true);
+        } else if (localStorage.getItem("myAuth") === null) {
+            // 3. Authorization Check
 
-   showUpdate(false);
-   showLogin(true);
-  } else {
-   // 4. Data Version Check
-   //! Version Conflict => Request an update
-   if (localStorage.getItem("myLinks@" + Ver) === null) {
-    var pwd = localStorage.getItem("myAuth");
-    var Ad = localStorage.getItem("myAdmsn") !== null ? localStorage.getItem("myAdmsn") : 0;
-    localStorage.clear(); // Clear All Prev Keys
-    localStorage.setItem("myTheme", theme);
-    localStorage.setItem("myAuth", pwd);
-    if (Ad !== 0) {
-     localStorage.setItem("myAdmsn", Ad);
+            showUpdate(false);
+            showLogin(true);
+        } else {
+            // 4. Data Version Check
+            //! Version Conflict => Request an update
+            if (localStorage.getItem("myLinks@" + Ver) === null) {
+                var pwd = localStorage.getItem("myAuth");
+                var Ad = localStorage.getItem("myAdmsn") !== null ? localStorage.getItem("myAdmsn") : 0;
+                localStorage.clear(); // Clear All Prev Keys
+                localStorage.setItem("myTheme", theme);
+                localStorage.setItem("myAuth", pwd);
+                if (Ad !== 0) {
+                    localStorage.setItem("myAdmsn", Ad);
+                }
+                showUpdate(true);
+            } else {
+                showLogin(false);
+                showUpdate(false);
+                showHomeUI(true); // Welcome Home Señor
+                setredirectOption(localStorage.getItem("myRedirect"));
+                setnoteTracker(JSON.parse(localStorage.getItem("myNoteDb")));
+            }
+        }
+    };
+
+    // Toggle Dark mode
+    const applyDarkTheme = (x) => {
+        x ? (calOptions.useDarkMode = true) : (calOptions.useDarkMode = false);
+        applyDark(x);
+        var root = document.querySelector(":root");
+        if (x) {
+            root.style.setProperty("--nav", "#202020");
+            root.style.setProperty("--card", "#282828");
+            root.style.setProperty("--txt", "#fff");
+            root.style.setProperty("--bg", "#4e4e4e");
+            root.style.setProperty("--shadow", "#363636");
+            localStorage.setItem("myTheme", "dark");
+        } else {
+            root.style.setProperty("--nav", "#fff");
+            root.style.setProperty("--card", "#fff");
+            root.style.setProperty("--txt", "#000");
+            root.style.setProperty("--bg", "#d2d2d2");
+            root.style.setProperty("--shadow", "#a9a9a9");
+            localStorage.setItem("myTheme", "light");
+        }
+    };
+
+    // Scrap Attendence from Portal
+    const mbcPortal = () => {
+        if (localStorage.getItem("myAdmsn") === null) {
+            var x = parseInt(prompt("Enter Admission No."), 10);
+            if (isNaN(x)) {
+                alert("Invalid Admission No");
+            } else {
+                localStorage.setItem("myAdmsn", x);
+                showMiniSpinner(true);
+                fetchApi();
+            }
+        } else {
+            showMiniSpinner(true);
+            fetchApi();
+        }
+    };
+
+    async function fetchApi() {
+        var response = await fetch("https://script.google.com/macros/s/AKfycby7pHDxW0LU4qUILHr8s06J9XiBdJpsT0P2mGEt7Dru2xuQkOCO/exec?Ad=" + localStorage.getItem("myAdmsn"));
+        var data = await response.json();
+        console.log(data);
+        if (data.sta === "failed") {
+            localStorage.removeItem("myAdmsn");
+            alert("Invalid Admission No.");
+        } else {
+            setAttendence(data);
+        }
+        showMiniSpinner(false);
     }
-    showUpdate(true);
-   } else {
-    showLogin(false);
-    showUpdate(false);
-    showHomeUI(true); // Welcome Home Señor
-    setredirectOption(localStorage.getItem("myRedirect"));
-   }
-  }
- };
 
- // Toggle Dark mode
- const applyDarkTheme = (x) => {
-  x ? (calOptions.useDarkMode = true) : (calOptions.useDarkMode = false);
-  applyDark(x);
-  var root = document.querySelector(":root");
-  if (x) {
-   root.style.setProperty("--nav", "#202020");
-   root.style.setProperty("--card", "#282828");
-   root.style.setProperty("--txt", "#fff");
-   root.style.setProperty("--bg", "#4e4e4e");
-   root.style.setProperty("--shadow", "#363636");
-   localStorage.setItem("myTheme", "dark");
-  } else {
-   root.style.setProperty("--nav", "#fff");
-   root.style.setProperty("--card", "#fff");
-   root.style.setProperty("--txt", "#000");
-   root.style.setProperty("--bg", "#d2d2d2");
-   root.style.setProperty("--shadow", "#a9a9a9");
-   localStorage.setItem("myTheme", "light");
-  }
- };
+    useEffect(() => {
+        initChecks(); // Routine Initial Checks (onstartup)
+        // eslint-disable-next-line
+    }, []);
 
- // Scrap Attendence from Portal
- const mbcPortal = () => {
-  if (localStorage.getItem("myAdmsn") === null) {
-   var x = parseInt(prompt("Enter Admission No."), 10);
-   if (isNaN(x)) {
-    alert("Invalid Admission No");
-   } else {
-    localStorage.setItem("myAdmsn", x);
-    showMiniSpinner(true);
-    fetchApi();
-   }
-  } else {
-   showMiniSpinner(true);
-   fetchApi();
-  }
- };
-
- async function fetchApi() {
-  var response = await fetch("https://script.google.com/macros/s/AKfycby7pHDxW0LU4qUILHr8s06J9XiBdJpsT0P2mGEt7Dru2xuQkOCO/exec?Ad=" + localStorage.getItem("myAdmsn"));
-  var data = await response.json();
-  console.log(data);
-  if (data.sta === "failed") {
-   localStorage.removeItem("myAdmsn");
-   alert("Invalid Admission No.");
-  } else {
-   setAttendence(data);
-  }
-  showMiniSpinner(false);
- }
-
- useEffect(() => {
-  initChecks(); // Routine Initial Checks (onstartup)
-
-  // eslint-disable-next-line
- }, []);
-
- // Checking Redirect option
- function changeRedirectOption() {
-  if (localStorage.getItem("myRedirect") === "true") {
-   localStorage.setItem("myRedirect", "false");
-   setredirectOption(false);
-  } else {
-   localStorage.setItem("myRedirect", "true");
-   setredirectOption(true);
-  }
- }
-
- return (
-  <div className="App">
-   <header>
-    <h3
-     onClick={() => {
-      window.location.reload();
-     }}
-    >
-     One Link
-    </h3>
-    <div>
-     {homepage && <GraphIco title="Check Attendence" onClick={mbcPortal} />}
-     {mode ? (
-      <LightIco
-       title="Apply Lightmode"
-       onClick={() => {
-        applyDarkTheme(false);
-       }}
-      />
-     ) : (
-      <DarkIco
-       title="Apply Darkmode"
-       onClick={() => {
-        applyDarkTheme(true);
-       }}
-      />
-     )}
-     {homepage && (
-      <label className="switch" title="Enable/Disable Auto Redirect">
-       <input type="checkbox" onClick={changeRedirectOption} defaultChecked={redirectOption === "true" ? true : false} id="togBtn" />
-       <div className="slider round"></div>
-      </label>
-     )}
-    </div>
-   </header>
-
-   {testing && <Testing />}
-   {login && <Login checks={[initChecks, Ver]} />}
-   {update && <Update checks={[initChecks, Ver]} />}
-   {homepage && (
-    <div className="container">
-     <Redirect calc={[index, setIndex]} data={JSON.parse(localStorage.getItem("myLinks@" + Ver))} />
-     <Classwork />
-     <Timeline spin={minispin} next={index} att={attendence} data={JSON.parse(localStorage.getItem("myLinks@" + Ver))} />
-     <div className="calenderBox">
-      <Calendar
-       {...calOptions}
-       value={calval}
-       onChange={(value) => {
+    // Checking Redirect option
+    function changeRedirectOption() {
+        if (localStorage.getItem("myRedirect") === "true") {
+            localStorage.setItem("myRedirect", "false");
+            setredirectOption(false);
+        } else {
+            localStorage.setItem("myRedirect", "true");
+            setredirectOption(true);
+        }
+    }
+    // Add and Display Calander Notes
+    function remainderBook(value) {
         setCalVal(value);
-       }}
-      />
-     </div>
-    </div>
-   )}
+        let securePrecheck;
+        var displayNote;
+        if (noteTracker) {
+            securePrecheck = noteTracker.findIndex(e => e.id === value.valueOf());
+        }
+        else {
+            securePrecheck = -1;
+        }
+        if (securePrecheck < 0) {
+            displayNote = "No Notes";
+        }
+        else {
+            displayNote = noteTracker[securePrecheck].noteData;
+        }
+        MySwal.fire({
+            html: "📝Notes:<br><br>" + "" + DOMPurify.sanitize(displayNote),
+            footer: "Powered By MBC Teams",
+            input: 'text',
+            inputPlaceholder: 'Add New Note',
+            didOpen: () => {
+                MySwal.clickConfirm()
+            }
+        }).then(result => {
+            if (result.value !== undefined && result.value !== " ") {
+                let oldData = JSON.parse(localStorage.getItem("myNoteDb"));
+                if (typeof (oldData) == "object" && oldData !== null) {
+                    let newData = {
+                        id: value.valueOf(),
+                        noteData: DOMPurify.sanitize(result.value)
+                    };
+                    if (securePrecheck >= 0) {
+                        let replaceModifiedData = [...oldData];
+                        replaceModifiedData[securePrecheck].noteData = DOMPurify.sanitize(result.value);
+                        localStorage.setItem("myNoteDb", JSON.stringify(replaceModifiedData));
+                        setnoteTracker(replaceModifiedData);
+                    }
+                    else {
+                        let moddifiedData = [...oldData, newData];
+                        setnoteTracker(moddifiedData);
+                        localStorage.setItem("myNoteDb", JSON.stringify(moddifiedData));
+                    }
+                }
+                else {
+                    let newData = [{
+                        id: value.valueOf(),
+                        noteData: DOMPurify.sanitize(result.value)
+                    }];
+                    setnoteTracker(newData);
+                    localStorage.setItem("myNoteDb", JSON.stringify(newData));
+                }
+            }
+        })
+    }
+    return (
+        <div className="App">
+            <header>
+                <h3
+                    onClick={() => {
+                        window.location.reload();
+                    }}
+                >
+                    One Link
+                </h3>
+                <div>
+                    {homepage && <GraphIco title="Check Attendence" onClick={mbcPortal} />}
+                    {mode ? (
+                        <LightIco
+                            title="Apply Lightmode"
+                            onClick={() => {
+                                applyDarkTheme(false);
+                            }}
+                        />
+                    ) : (
+                        <DarkIco
+                            title="Apply Darkmode"
+                            onClick={() => {
+                                applyDarkTheme(true);
+                            }}
+                        />
+                    )}
+                    {homepage && (
+                        <label className="switch" title="Enable/Disable Auto Redirect">
+                            <input type="checkbox" onClick={changeRedirectOption} defaultChecked={redirectOption === "true" ? true : false} id="togBtn" />
+                            <div className="slider round"></div>
+                        </label>
+                    )}
+                </div>
+            </header>
 
-   <footer className={!homepage ? "footer-fixed" : null}>Copyright © 2022. MBC Teams 3.1 Inc</footer>
-  </div>
- );
+            {testing && <Testing />}
+            {login && <Login checks={[initChecks, Ver]} />}
+            {update && <Update checks={[initChecks, Ver]} />}
+            {homepage && (
+                <div className="container">
+                    <Redirect calc={[index, setIndex]} data={JSON.parse(localStorage.getItem("myLinks@" + Ver))} />
+                    <Classwork />
+                    <Timeline spin={minispin} next={index} att={attendence} data={JSON.parse(localStorage.getItem("myLinks@" + Ver))} />
+
+                    <div className="calenderBox">
+                        <Calendar
+                            {...calOptions}
+                            value={calval}
+                            onChange={value => remainderBook(value)}
+                        />
+                    </div>
+                </div>
+            )}
+
+            <footer className={!homepage ? "footer-fixed" : null}>Copyright © 2022. MBC Teams 3.1 Inc</footer>
+        </div>
+    );
 };
 
 ReactDOM.render(
- <React.StrictMode>
-  <App />
- </React.StrictMode>,
- document.getElementById("root")
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+    document.getElementById("root")
 );

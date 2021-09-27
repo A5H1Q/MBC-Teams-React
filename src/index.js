@@ -175,7 +175,7 @@ const App = () => {
                 MySwal.clickConfirm()
             }
         }).then(result => {
-            if (result.value !== undefined && result.value !== " ") {
+            if (result.value !== undefined && result.value !== "") {
                 let oldData = JSON.parse(localStorage.getItem("myNoteDb"));
                 if (typeof (oldData) == "object" && oldData !== null) {
                     let newData = {

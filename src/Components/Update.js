@@ -1,4 +1,5 @@
 import {useEffect} from "react";
+
 const Update = (props) => {
  async function updateData() {
   var pwd = localStorage.getItem("myAuth");
@@ -6,12 +7,14 @@ const Update = (props) => {
   var data = await response.json();
 
   if (data.status === "hehe") {
-   //? Hmm.. Wrong Access code! => Perform Reset
+   //? Gormo: Huh.. Look, the Server giggles!
+   // Yoda: Perform Reset, you Must!
+
    var theme = localStorage.getItem("myTheme");
    localStorage.clear();
    localStorage.setItem("myTheme", theme);
   } else {
-   // Store New Links
+   // Let' Store the New Data
    localStorage.setItem("myLinks@" + props.checks[1], JSON.stringify(data));
   }
   props.checks[0]();
@@ -19,14 +22,16 @@ const Update = (props) => {
 
  useEffect(() => {
   updateData();
- });
+  // eslint-disable-next-line
+ }, []);
 
  return (
-  <div className="card">
+  <div className="dialogBox">
    <label>Updating links..</label>
-   <div className="spinner"></div>
-   <h5>We're gathering the latest data for you. This process is automatic and happens whenever a change is detected.</h5>
+   <div className="mega spinner"></div>
+   <h5>We're collecting the latest data for you, This process is automatic and happens whenever a change is detected on cloud.</h5>
   </div>
  );
 };
+
 export default Update;

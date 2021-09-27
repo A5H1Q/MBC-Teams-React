@@ -1,60 +1,97 @@
 import {useState, useEffect} from "react";
+import {ReactComponent as ArrowIcon} from "../Icons/arrow.svg";
 
 const Timeline = (props) => {
- const [msg, setMsg] = useState("No Logs");
+ var now = new Date();
 
- const paintTimeline = () => {
-  //   //   var activSub;
-  var now = new Date();
-  var curr_Hour = now.getHours();
-  var curr_Min = now.getMinutes();
-  var curr_Tym = "No Logs";
-  var myLinks = JSON.parse(localStorage.getItem("myLinks@" + props.version));
-  for (var i = 0; i < myLinks.timetable.hrsEnd.length; i++) {
-   if (curr_Hour < myLinks.timetable.hrsEnd[i][0]) {
-    if (curr_Min < myLinks.timetable.hrsEnd[i][1]) {
-     curr_Tym = i + 1 + " Period, Time: " + myLinks.timetable.hrsEnd[i][0] + " : " + myLinks.timetable.hrsEnd[i][1];
-     break;
-    }
+ const FrilastPeriod = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 50);
+ const GenlastPeriod = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 20);
+
+ const [timeline, setTimeline] = useState([]); // Subjects List
+ const [fSwitch, setFSwitch] = useState(false); // Friday Kill switch
+ const [day, setDay] = useState(0);
+
+ const weeks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+ const Today = now.getDay();
+
+ const isPast = (x) => {
+  if (Today === 0 || Today === 6) {
+   return "item";
+  } else if (now.getTime() > GenlastPeriod.getTime() && day === Today - 1) {
+   // General Afternoon
+   return "item bw";
+  } else if (day === Today - 1) {
+   // Strike out Finished classes from Present dayline
+   if (props.next >= x) {
+    return "item bw";
+   } else {
+    return "item";
    }
+  } else if (day < Today - 1) {
+   // Strike out Past days
+   return "item bw";
+  } else {
+   return "item";
   }
-  setMsg(curr_Tym);
-  //   //   console.log(myLinks.timetable.hrsEnd[0][0]);
-  //   //   const t1 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 50);
-  //   //   const t2 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 50);
-  //   //   const t3 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 11, 50);
-  //   //   const t4 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 50);
-  //   //   const t5 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 30);
-  //   //   var weeks = ["mon", "tue", "wen", "thu", "fri"];
-  //   //     // Handle Saturday and Sunday
-  //   //     if(now.getDay() == 0 || now.getDay() == 6){
-  //   //       // Timeline-Painter 🖌
-  //   //     }else{
-  //   //       // Handle Rest of the days [M-T-W-Th-F]
-  //   //       if(now.getTime() < t1.getTime()){activSub=weeks[now.getDay()][0];}
-  //   //       else if(now.getTime() < t2.getTime()){activSub=weeks[now.getDay()][1];}
-  //   //       else if(now.getTime() < t3.getTime()){activSub=weeks[now.getDay()][2];}
-  //   //       else if(now.getTime() < t4.getTime()){activSub=weeks[now.getDay()][3];}
-  //   //       else if(now.getDay() !== 5 && now.getTime() < t5.getTime()){activSub=weeks[now.getDay()][4];}
-  //   //       else{
-  //   //         // Class Finished :[
-  //   //         // Auto-select Next-Day as default
-  //   //         activSub= weeks[now.getDay()+1][0];
-  //   //         if(now.getDay() == 5){
-  //   //           document.getElementById("header").innerHTML="Monday<div id='dot'></div><span id='clk'>9:00 AM</span>";
-  //   //         }else{
-  //   //           Today=weeks[now.getDay()+1];
-  //   //           document.getElementById("header").innerHTML=Today[Today.length-1]+"<div id='dot'></div><span id='clk'>9:00 AM</span>";
-  //   //         }
-  //   //       }
-  //   //       // Timeline-Painter 🖌
-  //   //     }
  };
 
  useEffect(() => {
-  paintTimeline();
- });
+  Today === 0 || Today === 6 ? setDay(0) : setDay(Today - 1);
+  if (now.getDay() === 5 && now.getTime() > FrilastPeriod.getTime()) {
+   // Friday Afternoon
+   setFSwitch(true);
+   setDay(0);
+  } else {
+   setTimeline(props.data.timetable[weeks[day]]);
+  }
+  // eslint-disable-next-line
+ }, []);
 
- return <div className="card">{msg}</div>;
+ useEffect(() => {
+  setTimeline(props.data.timetable[weeks[day]]);
+  // eslint-disable-next-line
+ }, [day]);
+
+ return (
+  <div className="timelineBox card">
+   <div className="titlebar_1">
+    <ArrowIcon
+     className={day === 0 ? "disabled" : null}
+     title="Go Backward"
+     onClick={() => {
+      setDay(day - 1);
+     }}
+    />
+    <h3>{Today !== 5 && day === Today - 1 ? "Today" : weeks[day]}</h3>
+    <ArrowIcon
+     className={day === weeks.length - 1 ? "disabled" : null}
+     title="Go Forward"
+     onClick={() => {
+      setDay(day + 1);
+     }}
+    />
+   </div>
+
+   <div className="timeline">
+    {timeline.map((x, i) => (
+     <div key={i} className={fSwitch ? "item" : isPast(i)}>
+      <div className="strike"></div>
+      <img className="dot" src={"Images/" + props.data.links[x].id + ".jpg"} alt="Faculty thumb" />
+      <div
+       className="content"
+       onClick={() => {
+        props.data.links[x].link !== "nope" ? (window.location.href = props.data.links[x].link) : alert("No link Assigned, Yet");
+       }}
+      >
+       {props.spin ? <div className="mini spinner"></div> : props.att !== 0 ? <div className={props.att[x] < 80 ? "att danger" : "att cool"}>{props.att[x]}%</div> : null}
+       <h3>{x}</h3>
+       <span>{props.data.links[x].tchr}</span>
+      </div>
+     </div>
+    ))}
+   </div>
+  </div>
+ );
 };
+
 export default Timeline;

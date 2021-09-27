@@ -13,7 +13,7 @@ import Redirect from "./Components/Redirect.js";
 import Timeline from "./Components/Timeline.js";
 import {Calendar} from "@natscale/react-calendar";
 
-const Ver = 3.0; // API Data Version
+const Ver = 3.1; // API Data Version
 const Bug = 0; // Invoke Maintenance Mode
 
 const App = () => {
@@ -202,7 +202,7 @@ const App = () => {
     </div>
    )}
 
-   <footer className={!homepage ? "footer-fixed" : null}>Copyright © 2022. MBC Teams 3.0 Inc</footer>
+   <footer className={!homepage ? "footer-fixed" : null}>Copyright © 2022. MBC Teams 3.1 Inc</footer>
   </div>
  );
 };

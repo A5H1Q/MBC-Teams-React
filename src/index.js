@@ -13,7 +13,7 @@ import Redirect from "./Components/Redirect.js";
 import Timeline from "./Components/Timeline.js";
 import {Calendar} from "@natscale/react-calendar";
 
-const Ver = 2.1; // API Data Version
+const Ver = 3.0; // API Data Version
 const Bug = 0; // Invoke Maintenance Mode
 
 const App = () => {
@@ -26,7 +26,7 @@ const App = () => {
  const [minispin, showMiniSpinner] = useState(false);
  const [attendence, setAttendence] = useState(0);
  const [index, setIndex] = useState(0);
- const [redirectOption,setredirectOption] = useState();
+ const [redirectOption, setredirectOption] = useState();
 
  // Calender Configs see: @natscale/react-calender
  const [calOptions] = useState({
@@ -72,7 +72,7 @@ const App = () => {
     showLogin(false);
     showUpdate(false);
     showHomeUI(true); // Welcome Home Señor
-    setredirectOption(localStorage.getItem("redirectOption"));
+    setredirectOption(localStorage.getItem("myRedirect"));
    }
   }
  };
@@ -134,34 +134,30 @@ const App = () => {
 
   // eslint-disable-next-line
  }, []);
-// Checking Redirect option 
- function changeRedirectOption(){
-    if(localStorage.getItem("redirectOption")=="true")
-    {
-    
-        localStorage.setItem("redirectOption","false");
-        setredirectOption(false);
-    }
-    else
-    {
-        localStorage.setItem("redirectOption","true");
-        setredirectOption(true);
-    }
+
+ // Checking Redirect option
+ function changeRedirectOption() {
+  if (localStorage.getItem("myRedirect") === "true") {
+   localStorage.setItem("myRedirect", "false");
+   setredirectOption(false);
+  } else {
+   localStorage.setItem("myRedirect", "true");
+   setredirectOption(true);
+  }
  }
 
  return (
   <div className="App">
    <header>
-    <h3>One Link</h3>
+    <h3
+     onClick={() => {
+      window.location.reload();
+     }}
+    >
+     One Link
+    </h3>
     <div>
-    {homepage &&    
-     <span> 
-         <label className="switch" title="Enable/Disable Auto Redirect">
-            <input type="checkbox" onClick={changeRedirectOption} defaultChecked={redirectOption=='true'?true:false} id="togBtn" />
-            <div className="slider round"></div>
-        </label>
-        <GraphIco title="Check Attendence" onClick={mbcPortal} />
-    </span>}
+     {homepage && <GraphIco title="Check Attendence" onClick={mbcPortal} />}
      {mode ? (
       <LightIco
        title="Apply Lightmode"
@@ -176,6 +172,12 @@ const App = () => {
         applyDarkTheme(true);
        }}
       />
+     )}
+     {homepage && (
+      <label className="switch" title="Enable/Disable Auto Redirect">
+       <input type="checkbox" onClick={changeRedirectOption} defaultChecked={redirectOption === "true" ? true : false} id="togBtn" />
+       <div className="slider round"></div>
+      </label>
      )}
     </div>
    </header>
@@ -200,7 +202,7 @@ const App = () => {
     </div>
    )}
 
-   <footer className={!homepage ? "footer-fixed" : null}>Copyright © 2022. MBC Teams Inc</footer>
+   <footer className={!homepage ? "footer-fixed" : null}>Copyright © 2022. MBC Teams 3.0 Inc</footer>
   </div>
  );
 };

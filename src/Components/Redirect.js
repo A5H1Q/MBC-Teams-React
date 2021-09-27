@@ -54,13 +54,13 @@ const Redirect = (props) => {
 
  useEffect(() => {
   calcSub();
-  if (flag && props.data.links[sub].link !== "nope" && localStorage.getItem("redirectOption")=="true") {
+  if (flag && props.data.links[sub].link !== "nope" && localStorage.getItem("myRedirect") === "true") {
    setAutoRedirect(true);
   } else {
    setAutoRedirect(false);
   }
   // eslint-disable-next-line
- }, [props.data, sub]);
+ }, [sub]);
 
  useEffect(() => {
   let timer1 = setTimeout(() => {

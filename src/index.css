@@ -40,13 +40,17 @@ svg {
  border-radius: 50%;
  border: 7px solid transparent;
 }
+header h3 {
+ cursor: pointer;
+}
 header svg {
- margin-left: 20px;
+ margin-left: 18px;
+ border-radius: 50%;
+ vertical-align: bottom;
 }
 header svg:nth-child(1) {
- border-radius: 5px;
+ margin-left: 0;
 }
-
 header svg:active {
  background: var(--bg);
  border: 7px solid var(--bg);
@@ -459,70 +463,59 @@ footer {
  }
 }
 .switch {
-    position: relative;
-    display: inline-block;
-    width: 90px;
-    height: 34px;
-  }
-  
-  .switch input {display:none;}
-  
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #d2d2d2;
-    -webkit-transition: .4s;
-    transition: .4s;
-     border-radius: 34px;
-  }
-  
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 50%;
-  }
-  
-  input:checked + .slider {
-    background-color: #2ab934;
-  }
-  
-  input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
-  }
-  
-  input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(55px);
-  }
-  
-  /*------ ADDED CSS ---------*/
-  .slider:after
-  {
-   content:'OFF';
-   color: white;
-   display: block;
-   position: absolute;
-   transform: translate(-50%,-50%);
-   top: 50%;
-   left: 50%;
-   font-size: 10px;
-   font-family: Verdana, sans-serif;
-  }
-  
-  input:checked + .slider:after
-  {  
-    content:'ON';
-  }
-  
+ position: relative;
+ display: inline-block;
+ width: 60px;
+ height: 30px;
+ margin-left: 20px;
+}
+
+.switch input {
+ display: none;
+}
+
+.slider {
+ position: absolute;
+ cursor: pointer;
+ background-color: var(--bg);
+ transition: 0.2s;
+ border-radius: 50px;
+ width: 50px;
+ height: 30px;
+ box-shadow: inset 1px 1px 3px 0px #777777;
+}
+
+.slider:before {
+ position: absolute;
+ content: "";
+ height: 20px;
+ width: 20px;
+ left: 5px;
+ top: 4px;
+ background-color: #fff;
+ transition: 0.2s;
+ border-radius: 50%;
+ border: 1px solid #a7a7a7;
+ z-index: 9;
+}
+.slider:after {
+ content: "OFF";
+ display: block;
+ position: absolute;
+ top: 11px;
+ left: 30px;
+ font-size: 7px;
+ /* font-weight: 100; */
+}
+input:checked + .slider:after {
+ content: "ON";
+ left: 9px;
+ color: #fff;
+}
+
+input:checked + .slider:before {
+ left: 24px;
+}
+input:checked + .slider {
+ background-color: #2ab934;
+}

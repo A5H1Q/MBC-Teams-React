@@ -1,17 +1,17 @@
 import "./index.css";
 import "./Components/calender.css";
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import ReactDOM from "react-dom";
-import { ReactComponent as LightIco } from "./Icons/bright.svg";
-import { ReactComponent as DarkIco } from "./Icons/dark.svg";
-import { ReactComponent as GraphIco } from "./Icons/graph.svg";
+import {ReactComponent as LightIco} from "./Icons/bright.svg";
+import {ReactComponent as DarkIco} from "./Icons/dark.svg";
+import {ReactComponent as GraphIco} from "./Icons/graph.svg";
 import Testing from "./Components/Testing.js";
 import Login from "./Components/Login.js";
 import Update from "./Components/Update.js";
 import Classwork from "./Components/Classwork.js";
 import Redirect from "./Components/Redirect.js";
 import Timeline from "./Components/Timeline.js";
-import { Calendar } from "@natscale/react-calendar";
+import {Calendar} from "@natscale/react-calendar";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const DOMPurify = require('dompurify')(window);
@@ -149,6 +149,7 @@ const App = () => {
             setredirectOption(true);
         }
     }
+    // Add and Display Calander Notes
     function remainderBook(value) {
         setCalVal(value);
         let securePrecheck;
@@ -159,7 +160,6 @@ const App = () => {
         else {
             securePrecheck = -1;
         }
-
         if (securePrecheck < 0) {
             displayNote = "No Notes";
         }
@@ -175,9 +175,7 @@ const App = () => {
                 MySwal.clickConfirm()
             }
         }).then(result => {
-
             if (result.value !== undefined && result.value !== " ") {
-
                 let oldData = JSON.parse(localStorage.getItem("myNoteDb"));
                 if (typeof (oldData) == "object" && oldData !== null) {
                     let newData = {
@@ -195,7 +193,6 @@ const App = () => {
                         setnoteTracker(moddifiedData);
                         localStorage.setItem("myNoteDb", JSON.stringify(moddifiedData));
                     }
-
                 }
                 else {
                     let newData = [{

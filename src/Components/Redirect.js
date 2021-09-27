@@ -54,7 +54,7 @@ const Redirect = (props) => {
 
  useEffect(() => {
   calcSub();
-  if (flag && props.data.links[sub].link !== "nope") {
+  if (flag && props.data.links[sub].link !== "nope" && localStorage.getItem("redirectOption")=="true") {
    setAutoRedirect(true);
   } else {
    setAutoRedirect(false);

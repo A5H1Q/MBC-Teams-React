@@ -60,7 +60,7 @@ const Redirect = (props) => {
    setAutoRedirect(false);
   }
   // eslint-disable-next-line
- }, [props.data, sub]);
+ }, [flag, sub]);
 
  useEffect(() => {
   let timer1 = setTimeout(() => {

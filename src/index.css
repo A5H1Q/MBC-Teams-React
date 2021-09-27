@@ -519,3 +519,38 @@ input:checked + .slider:before {
 input:checked + .slider {
  background-color: #2ab934;
 }
+.swal2-popup {
+ background: var(--card) !important;
+}
+
+.swal2-header {
+ display: block !important;
+}
+.swal2-footer {
+ font-size: 12px !important;
+ border-top: 1px solid var(--bg) !important;
+}
+.swal2-actions {
+ justify-content: end !important;
+ margin-top: 0 !important;
+}
+.swal2-input {
+ border: 1px solid #666 !important;
+ height: 50px !important;
+}
+::placeholder {
+ color: #858585 !important;
+ font-size: 13px !important;
+}
+
+:-ms-input-placeholder {
+ /* Internet Explorer 10-11 */
+ color: #858585 !important;
+ font-size: 13px !important;
+}
+
+::-ms-input-placeholder {
+ /* Microsoft Edge */
+ color: #858585 !important;
+ font-size: 13px !important;
+}

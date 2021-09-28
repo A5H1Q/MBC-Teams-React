@@ -101,7 +101,7 @@ const Redirect = (props) => {
       </button>
      ) : (
       <a href={props.data.links[sub].link} target="_self" className="join btn">
-       Join
+       Join Meet
       </a>
      )}
     </div>

@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const DOMPurify = require("dompurify")(window);
 const MySwal = withReactContent(Swal);
-const Ver = 3.2; // API Data Version
+const Ver = 4.0; // API Data Version
 const Bug = 0; // Invoke Maintenance Mode
 
 const App = () => {
@@ -212,7 +212,7 @@ const App = () => {
       window.location.reload();
      }}
     >
-     One Link
+     MBC Teams
     </h3>
     <div>
      {homepage && <GraphIco title="Check Attendence" onClick={mbcPortal} />}
@@ -246,7 +246,7 @@ const App = () => {
    {homepage && (
     <div className="container">
      <Redirect calc={[index, setIndex]} data={JSON.parse(localStorage.getItem("myLinks@" + Ver))} />
-     <Classwork />
+     <Classwork data={JSON.parse(localStorage.getItem("myLinks@" + Ver))} />
      <Timeline spin={minispin} next={index} att={attendence} data={JSON.parse(localStorage.getItem("myLinks@" + Ver))} />
 
      <div className="calenderBox">
@@ -255,7 +255,7 @@ const App = () => {
     </div>
    )}
 
-   <footer className={!homepage ? "footer-fixed" : null}>Copyright © 2022. MBC Teams 3.2 Inc</footer>
+   <footer className={!homepage ? "footer-fixed" : null}>Copyright © 2022. MBC Teams 4.0 Inc</footer>
   </div>
  );
 };

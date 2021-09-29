@@ -214,7 +214,7 @@ const App = () => {
     >
      MBC Teams
     </h3>
-    <div>
+    <div className="Iconbox">
      {homepage && <GraphIco title="Check Attendence" onClick={mbcPortal} />}
      {mode ? (
       <LightIco

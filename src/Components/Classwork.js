@@ -89,6 +89,7 @@ const Classwork = (props) => {
     }
    );
   }
+  // eslint-disable-next-line
  }, [isSignedIn]);
 
  const handleAuthChange = () => {
@@ -101,6 +102,7 @@ const Classwork = (props) => {
 
  const handleSignOut = () => {
   auth.current.signOut();
+  setPending([]);
   setMsg("");
  };
 

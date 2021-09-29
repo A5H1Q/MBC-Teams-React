@@ -42,6 +42,16 @@ svg {
 }
 header h3 {
  cursor: pointer;
+ width: auto;
+ overflow: hidden;
+ white-space: nowrap;
+ text-overflow: ellipsis;
+}
+.Iconbox {
+ display: flex;
+ flex-direction: row;
+ flex-wrap: nowrap;
+ align-items: center;
 }
 header svg {
  margin-left: 18px;
@@ -85,7 +95,8 @@ header svg:active {
  display: grid;
  grid-template-areas:
   "Rbox"
-  "Tbox";
+  "Tbox"
+  "Cbox";
  margin: 15px;
  margin-top: 40px;
  align-items: start;
@@ -105,9 +116,9 @@ header svg:active {
 }
 .classworkBox {
  grid-area: Cbox;
- max-width: 400px;
- display: none;
+ max-width: 450px;
  height: 255px;
+ overflow: hidden;
 }
 ul.tasks {
  font-size: 12px;
@@ -463,6 +474,9 @@ footer {
  }
 }
 @media screen and (min-width: 710px) {
+ .classworkBox {
+  max-width: 375px;
+ }
  .calenderBox {
   display: block;
  }
@@ -472,7 +486,8 @@ footer {
  .container {
   grid-template-areas:
    "Tbox Rbox"
-   "Tbox Cal";
+   "Tbox Cal"
+   "Cbox Cal";
   justify-content: center;
  }
 }
@@ -482,9 +497,6 @@ footer {
  }
 }
 @media screen and (min-width: 992px) {
- .classworkBox {
-  display: block;
- }
  .container {
   grid-template-areas:
    "Rbox Tbox Cal"
@@ -591,7 +603,3 @@ input:checked + .slider {
  color: #858585 !important;
  font-size: 13px !important;
 }
-/* width: 70px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis; */

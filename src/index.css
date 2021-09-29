@@ -30,7 +30,7 @@ body {
  align-content: center;
  justify-content: space-between;
  align-items: center;
- padding: 4px 30px;
+ padding: 4px 15px;
  box-shadow: 0 6px 8px var(--shadow);
 }
 svg {
@@ -45,6 +45,7 @@ header h3 {
  width: auto;
  overflow: hidden;
  white-space: nowrap;
+ padding-right: 25px;
  text-overflow: ellipsis;
 }
 .Iconbox {
@@ -54,7 +55,7 @@ header h3 {
  align-items: center;
 }
 header svg {
- margin-left: 18px;
+ margin-left: 15px;
  border-radius: 50%;
  vertical-align: bottom;
 }
@@ -136,14 +137,14 @@ ul.tasks li {
 ul.tasks li a {
  color: var(--txt);
 }
-.tasks::-webkit-scrollbar {
+::-webkit-scrollbar {
  width: 8px;
 }
-.tasks::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
  background: #6e6e6e78;
  border-radius: 10px;
 }
-.tasks::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
  background: transparent;
 }
 .timelineBox {
@@ -361,7 +362,7 @@ ul.tasks li a {
 }
 .danger {
  background: #f03e3e;
- color: #ffcbc9;
+ color: var(--txt);
 }
 
 .cool {
@@ -464,7 +465,11 @@ footer {
 }
 
 /* ⚠ Caution Responsive code Ahead */
-
+@media screen and (min-width: 425px) {
+ .App > header {
+  padding: 4px 25px;
+ }
+}
 @media screen and (min-width: 600px) {
  .dialogBox {
   top: 24%;
@@ -496,7 +501,7 @@ footer {
   top: 27%;
  }
 }
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 1060px) {
  .container {
   grid-template-areas:
    "Rbox Tbox Cal"
@@ -516,7 +521,7 @@ footer {
  display: inline-block;
  width: 60px;
  height: 30px;
- margin-left: 20px;
+ margin-left: 15px;
 }
 
 .switch input {

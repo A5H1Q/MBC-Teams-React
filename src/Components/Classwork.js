@@ -118,7 +118,7 @@ const Classwork = (props) => {
  const LoadingMsg = () => {
   if (!isComplete) {
    if (isSignedIn == null) {
-    return <div className="text">Loading.. Please wait</div>;
+    return <div className="text">Loading.. Please wait..</div>;
    } else {
     if (isSignedIn) {
      return <div className="text">Looking for pending Assignments...</div>;

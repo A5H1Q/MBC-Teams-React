@@ -232,7 +232,7 @@ const App = () => {
       />
      )}
      {homepage && (
-      <label className="switch" title="Enable/Disable Auto Redirect">
+      <label className="switch" title="Toggle Auto Redirect">
        <input type="checkbox" onClick={changeRedirectOption} defaultChecked={redirectOption === "true" ? true : false} id="togBtn" />
        <div className="slider round"></div>
       </label>

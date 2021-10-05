@@ -31,12 +31,20 @@ const App = () => {
  const [index, setIndex] = useState(0);
  const [redirectOption, setredirectOption] = useState();
  const [noteTracker, setnoteTracker] = useState(null);
-
+ const highlights = []
+ const preHighlight = JSON.parse(localStorage.getItem("myNoteDb"))
+ if(preHighlight)
+ {
+preHighlight.map((data,index) => {
+    highlights.push(new Date(data.id))
+})
+ }
  // Calender Configs see: @natscale/react-calender
  const [calOptions] = useState({
   useDarkMode: false,
   startOfWeek: 0,
   disablePast: true,
+  highlights: highlights,
  });
 
  // Startup Checks

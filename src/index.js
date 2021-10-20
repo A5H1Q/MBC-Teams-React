@@ -146,9 +146,6 @@ preHighlight.map((data,index) => {
   initChecks(); // Routine Initial Checks (onstartup)
   // eslint-disable-next-line
  }, []);
-function test(){
-    alert(1)
-}
  // Checking Redirect option
  function changeRedirectOption() {
   if (localStorage.getItem("myRedirect") === "true") {

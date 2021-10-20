@@ -31,17 +31,17 @@ const App = () => {
  const [index, setIndex] = useState(0);
  const [redirectOption, setredirectOption] = useState();
  const [noteTracker, setnoteTracker] = useState(null);
- const highlights = []
- const preHighlight = JSON.parse(localStorage.getItem("myNoteDb"))
- const escapeHtml = (input) => { 
-    return input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/>/g, "&gt;").replace(/'/g, "&#039;");
-}
- if(preHighlight)
- {
-preHighlight.map((data,index) => {
-    highlights.push(new Date(data.id))
-})
+ const highlights = [];
+ const escapeHtml = (input) => {
+  return input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/>/g, "&gt;").replace(/'/g, "&#039;");
+ };
+ const preHighlight = JSON.parse(localStorage.getItem("myNoteDb"));
+ if (preHighlight) {
+  preHighlight.map((data) => {
+   return highlights.push(new Date(data.id));
+  });
  }
+
  // Calender Configs see: @natscale/react-calender
  const [calOptions] = useState({
   useDarkMode: false,
@@ -181,20 +181,17 @@ preHighlight.map((data,index) => {
    input: "text",
    inputPlaceholder: "Add New Note",
    showCancelButton: true,
-   cancelButtonText:
-    'Clear Notes',
+   cancelButtonText: "Clear",
    didOpen: () => {
     MySwal.clickConfirm();
    },
   }).then((result) => {
-    if(result.dismiss==="cancel")
-    {
-        let currentDb = JSON.parse(localStorage.getItem("myNoteDb"));
-        let outputArray = currentDb.filter(notesData => notesData.id !== value.valueOf());
-        localStorage.setItem("myNoteDb",JSON.stringify(outputArray));
-        setnoteTracker(JSON.parse(localStorage.getItem("myNoteDb")));
-    
-    }
+   if (result.dismiss === "cancel") {
+    let currentDb = JSON.parse(localStorage.getItem("myNoteDb"));
+    let outputArray = currentDb.filter((notesData) => notesData.id !== value.valueOf());
+    localStorage.setItem("myNoteDb", JSON.stringify(outputArray));
+    setnoteTracker(JSON.parse(localStorage.getItem("myNoteDb")));
+   }
    if (result.value !== undefined && result.value !== "") {
     let oldData = JSON.parse(localStorage.getItem("myNoteDb"));
     if (typeof oldData == "object" && oldData !== null) {

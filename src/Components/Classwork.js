@@ -53,14 +53,12 @@ const Classwork = (props) => {
               for (let k = 0; k < resp2.result.courseWork.length; k++) {
                if (resp2.result.courseWork[k].id === resp1.result.studentSubmissions[j].courseWorkId) {
                 setPending((pending) => [...pending, {title: resp2.result.courseWork[k].title, link: resp2.result.courseWork[k].alternateLink}]);
-                if (k === resp2.result.courseWork.length - 1) {
-                 setCompleted(true);
-                }
+                setCompleted(true);
                }
               }
              },
              (err3) => {
-              console.error(err3);
+              console.log(err3);
               setMsg("Exec code-3");
               setCompleted(true);
              }
@@ -68,6 +66,7 @@ const Classwork = (props) => {
           }
          } else {
           count++;
+          // console.log(count);
           if (count === props.data.CORS.length) {
            setMsg("No Pending Assignments :)");
            setCompleted(true);
@@ -75,7 +74,7 @@ const Classwork = (props) => {
          }
         },
         (err2) => {
-         console.error(err2);
+         console.log(err2);
          setMsg("Exec code-2");
          setCompleted(true);
         }
@@ -83,7 +82,7 @@ const Classwork = (props) => {
      }
     },
     (err1) => {
-     console.error(err1);
+     console.log(err1);
      setMsg("Error code-1");
      setCompleted(true);
     }

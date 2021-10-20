@@ -587,10 +587,12 @@ input:checked + .slider {
 .swal2-actions {
  justify-content: end !important;
  margin-top: 0 !important;
+ flex-flow: row-reverse;
 }
 .swal2-input {
  border: 1px solid #666 !important;
  height: 50px !important;
+ color: var(--txt) !important;
 }
 ::placeholder {
  color: #858585 !important;

@@ -33,6 +33,9 @@ const App = () => {
  const [noteTracker, setnoteTracker] = useState(null);
  const highlights = []
  const preHighlight = JSON.parse(localStorage.getItem("myNoteDb"))
+ const escapeHtml = (input) => { 
+    return input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/>/g, "&gt;").replace(/'/g, "&#039;");
+}
  if(preHighlight)
  {
 preHighlight.map((data,index) => {
@@ -174,7 +177,7 @@ preHighlight.map((data,index) => {
   }
   MySwal.fire({
    title: "Notes",
-   html: DOMPurify.sanitize(displayNote),
+   html: DOMPurify.sanitize(escapeHtml(displayNote)),
    footer: "Powered By ⚡ MBC Teams",
    input: "text",
    inputPlaceholder: "Add New Note",

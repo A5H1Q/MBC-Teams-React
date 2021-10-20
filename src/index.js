@@ -179,7 +179,7 @@ preHighlight.map((data,index) => {
    inputPlaceholder: "Add New Note",
    showCancelButton: true,
    cancelButtonText:
-    '<i class="fa fa-thumbs-up"></i> Clear Notes',
+    'Clear Notes',
    didOpen: () => {
     MySwal.clickConfirm();
    },

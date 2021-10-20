@@ -20,6 +20,8 @@ const Ver = 4.0; // API Data Version
 const Bug = 0; // Invoke Maintenance Mode
 
 const App = () => {
+ const highlightedDates = [];
+
  const [mode, applyDark] = useState(false);
  const [testing, showMaintenanceBox] = useState(false);
  const [login, showLogin] = useState(false);
@@ -31,24 +33,31 @@ const App = () => {
  const [index, setIndex] = useState(0);
  const [redirectOption, setredirectOption] = useState();
  const [noteTracker, setnoteTracker] = useState(null);
- const highlights = [];
- const escapeHtml = (input) => {
-  return input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/>/g, "&gt;").replace(/'/g, "&#039;");
- };
- const preHighlight = JSON.parse(localStorage.getItem("myNoteDb"));
- if (preHighlight) {
-  preHighlight.map((data) => {
-   return highlights.push(new Date(data.id));
-  });
- }
 
  // Calender Configs see: @natscale/react-calender
- const [calOptions] = useState({
+ const [calOptions, setcalOptions] = useState({
   useDarkMode: false,
   startOfWeek: 0,
   disablePast: true,
-  highlights: highlights,
+  highlights: highlightedDates,
  });
+
+ const escapeHtml = (input) => {
+  return input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/>/g, "&gt;").replace(/'/g, "&#039;");
+ };
+
+ // Calender Date Highlight
+ const preHighlight = () => {
+  var hDates = JSON.parse(localStorage.getItem("myNoteDb"));
+  if (hDates) {
+   hDates.map((data) => {
+    highlightedDates.push(new Date(data.id));
+    calOptions.highlights = highlightedDates;
+   });
+  }
+  //TODO:   setcalOptions({...calOptions, highlights: highlightedDates});
+  // console.log(calOptions);
+ };
 
  // Startup Checks
  const initChecks = () => {
@@ -89,6 +98,7 @@ const App = () => {
     showHomeUI(true); // Welcome Home Señor
     setredirectOption(localStorage.getItem("myRedirect"));
     setnoteTracker(JSON.parse(localStorage.getItem("myNoteDb")));
+    preHighlight();
    }
   }
  };
@@ -135,7 +145,6 @@ const App = () => {
  async function fetchApi() {
   var response = await fetch("https://script.google.com/macros/s/AKfycby7pHDxW0LU4qUILHr8s06J9XiBdJpsT0P2mGEt7Dru2xuQkOCO/exec?Ad=" + localStorage.getItem("myAdmsn"));
   var data = await response.json();
-  console.log(data);
   if (data.sta === "failed") {
    localStorage.removeItem("myAdmsn");
    alert("Invalid Admission No.");
@@ -189,11 +198,12 @@ const App = () => {
    if (result.dismiss === "cancel") {
     let currentDb = JSON.parse(localStorage.getItem("myNoteDb"));
     let outputArray = currentDb.filter((notesData) => notesData.id !== value.valueOf());
+
     localStorage.setItem("myNoteDb", JSON.stringify(outputArray));
     setnoteTracker(JSON.parse(localStorage.getItem("myNoteDb")));
-   }
-   if (result.value !== undefined && result.value !== "") {
+   } else if (result.value !== undefined && result.value !== "") {
     let oldData = JSON.parse(localStorage.getItem("myNoteDb"));
+
     if (typeof oldData == "object" && oldData !== null) {
      let newData = {
       id: value.valueOf(),
@@ -220,6 +230,7 @@ const App = () => {
      localStorage.setItem("myNoteDb", JSON.stringify(newData));
     }
    }
+   preHighlight();
   });
  }
  return (

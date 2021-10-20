@@ -146,7 +146,9 @@ preHighlight.map((data,index) => {
   initChecks(); // Routine Initial Checks (onstartup)
   // eslint-disable-next-line
  }, []);
-
+function test(){
+    alert(1)
+}
  // Checking Redirect option
  function changeRedirectOption() {
   if (localStorage.getItem("myRedirect") === "true") {
@@ -178,10 +180,21 @@ preHighlight.map((data,index) => {
    footer: "Powered By ⚡ MBC Teams",
    input: "text",
    inputPlaceholder: "Add New Note",
+   showCancelButton: true,
+   cancelButtonText:
+    '<i class="fa fa-thumbs-up"></i> Clear Notes',
    didOpen: () => {
     MySwal.clickConfirm();
    },
   }).then((result) => {
+    if(result.dismiss==="cancel")
+    {
+        let currentDb = JSON.parse(localStorage.getItem("myNoteDb"));
+        let outputArray = currentDb.filter(notesData => notesData.id !== value.valueOf());
+        localStorage.setItem("myNoteDb",JSON.stringify(outputArray));
+        setnoteTracker(JSON.parse(localStorage.getItem("myNoteDb")));
+    
+    }
    if (result.value !== undefined && result.value !== "") {
     let oldData = JSON.parse(localStorage.getItem("myNoteDb"));
     if (typeof oldData == "object" && oldData !== null) {
